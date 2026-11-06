@@ -27,66 +27,305 @@
 @keyframes stockIn{from{transform:translateY(-7px);opacity:.55}to{transform:translateY(0);opacity:1}}
 @media(max-width:800px){.gamegrid{grid-template-columns:1fr}.warehouse{min-height:400px}.warehouse-rack{top:126px;bottom:55px}.storage-row{gap:2px;padding:5px 6px 7px}.warehouse-floor{height:43px}}
 @media(prefers-reduced-motion:reduce){.crate{animation:none}}
+
+/* V3: varios productos, configuración persistente y almacén por producto */
+.start-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.start-actions button{flex:1;min-width:170px}
+.config{display:flex;flex-direction:column;justify-content:center}
+.config h2{margin-bottom:10px}
+.setup-info{margin:12px 0;color:#b8d4ee;line-height:1.6}
+.configgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 18px}
+.configgrid .field{min-width:0}
+.config-panel{margin-top:14px;background:#0b2443;border:1px solid #4d7ca9;border-radius:14px;padding:18px}
+.setting-note{font-size:12px;line-height:1.5;color:#bed4e9;margin:8px 0}
+.stepper input{width:85px}
+.summary{margin:16px 0;padding:15px 18px;border:1px solid #4689b3;background:#0f3053;border-radius:12px;line-height:1.8}
+.summary strong{color:#93eff5}
+.new-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.warehouse-note{margin-top:13px;color:#c1d6e9;font-size:13px;line-height:1.5;text-align:center}
+.product-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:11px 0 15px}
+.product-tabs button{box-shadow:none;border-radius:10px;background:#112b4b;padding:9px 13px;border:1px solid #527da4;font-size:13px;flex:1}
+.product-tabs button.active{background:#14639e;border-color:#70eaf1}
+.order-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:12px;margin:15px 0 20px}
+.order-item{background:#0b2849;border:1px solid #567ea9;border-radius:13px;padding:15px}
+.order-item label{font-weight:800;display:block;margin-bottom:7px}
+.order-item p{font-size:13px;color:#b8d3e8;margin:0 0 13px}
+.order-item input{display:block;width:100%;background:#e5f1ff;color:#142849;padding:11px 13px;font-weight:800;font-size:24px;border:2px solid transparent;border-radius:11px;text-align:center}
+.order-item input:focus{border-color:#55e2ff;outline:2px solid #55e2ff;outline-offset:2px}
+.order-item input::placeholder{color:#667c95;font-size:18px;font-weight:500}
+.order-hint{font-size:13px;color:#a8d1e9;margin-top:11px}
+.shortage{font-weight:800;border-radius:999px;padding:3px 8px;display:inline-block;min-width:45px;text-align:center;color:#ffbdc2;background:#6b2944;border:1px solid #b65170}
+.excess{font-weight:800;border-radius:999px;padding:3px 8px;display:inline-block;min-width:45px;text-align:center;color:#b0f7d9;background:#125c44;border:1px solid #2ab18a}
+.balanced{font-weight:800;border-radius:999px;padding:3px 8px;display:inline-block;min-width:45px;text-align:center;color:#cce0f2;background:#2e4565;border:1px solid #597899}
+.baseline-row td{background:#28557740}
+.result-summary{margin-top:20px;color:#bcd7eb}
+@media(max-width:800px){.hero{grid-template-columns:1fr}.store{min-height:300px}.configgrid{grid-template-columns:1fr}.order-list{grid-template-columns:1fr}.endgrid{grid-template-columns:1fr}}
 </style></head>
 <body><div class="shell"><header><div class="brand">📦 Predice <span>el Stock</span></div><div class="tag">Un producto · Hasta 40 meses</div></header>
-<section id="setup" class="hero"><div class="store panel"><div class="shopicon" aria-hidden="true">🏪</div><div><h1>Tu tienda.<br>Tu decisión.</h1><p>¿Cuánto pedirías sin conocer la demanda del próximo mes?</p></div></div>
-<div class="panel config"><h2>⚙️ Configura tu simulación</h2><div class="field"><label for="years">Trayectoria de la empresa</label><div class="help">Años de operación. A más trayectoria, mayor cartera inicial de clientes.</div><div class="stepper"><button type="button" data-step="years" data-delta="-1" aria-label="Menos años">−</button><input id="years" type="number" min="0" max="50" value="5"><button type="button" data-step="years" data-delta="1" aria-label="Más años">+</button><span>años</span></div></div>
-<div class="field"><label for="months">Meses a simular</label><div class="help">Al llegar al último mes aparecerá el análisis de resultados.</div><div class="stepper"><button type="button" data-step="months" data-delta="-1" aria-label="Menos meses">−</button><input id="months" type="number" min="1" max="40" value="24"><button type="button" data-step="months" data-delta="1" aria-label="Más meses">+</button><span>meses</span></div></div>
-<div class="field"><label>Tolerancia de clientes</label><div class="help">Probabilidad de que un cliente no atendido vuelva el próximo mes.</div><div class="choices" role="group" aria-label="Tolerancia"><button type="button" data-tol="baja">Baja</button><button type="button" data-tol="media" class="active">Media</button><button type="button" data-tol="alta">Alta</button></div></div>
-<div class="notice">La demanda futura estará oculta. Solo conocerás tu inventario y los pedidos y demandas de meses anteriores.</div><button class="green" id="start">▶ Iniciar simulación</button></div></section>
-<section id="play" class="hidden"><div class="topline"><h1 id="monthLabel">🏪 Mes 1</h1><div class="tag" id="gameConfig"></div></div>
-<div class="gamegrid"><div class="panel"><h2>📦 Inventario actual</h2>
-<div id="warehouse" class="warehouse" role="img" aria-label="Bodega sin inventario">
-<div class="warehouse-lamp" aria-hidden="true"></div><div class="stock-counter">Inventario: <strong id="inventory">0</strong></div>
+<section id="setup" class="hero">
+<div class="store panel"><div class="shopicon" aria-hidden="true">🏪</div><div><h1>Predice el Stock</h1><p>Gestiona las existencias y descubre cómo cambia la demanda de tu tienda.</p></div></div>
+<div class="panel config">
+<h2>📦 Tu próxima partida</h2>
+<p class="setup-info">Empiezas con un <strong>Mes 0</strong> conocido. Después decidirás los pedidos sin ver la demanda futura. Cada partida utiliza la última configuración que elegiste.</p>
+<div class="summary" id="configSummary" aria-live="polite"></div>
+<div class="start-actions"><button type="button" id="configToggle" class="subtle" aria-expanded="false" aria-controls="configPanel">⚙️ Configuración</button><button class="green" id="start">▶ Iniciar simulación</button></div>
+<div class="config-panel hidden" id="configPanel">
+<h2>⚙️ Configuración del juego</h2>
+<div class="configgrid">
+<div class="field"><label for="years">Trayectoria</label><div class="help">Años que lleva funcionando la tienda; aumenta la base de clientes.</div><div class="stepper"><button type="button" data-step="years" data-delta="-1" aria-label="Restar un año">−</button><input id="years" type="number" min="0" max="50" value="5"><button type="button" data-step="years" data-delta="1" aria-label="Sumar un año">+</button></div></div>
+<div class="field"><label for="months">Meses a simular</label><div class="help">Duración de la partida (máximo 40, más el mes 0).</div><div class="stepper"><button type="button" data-step="months" data-delta="-1" aria-label="Restar un mes">−</button><input id="months" type="number" min="1" max="40" value="24"><button type="button" data-step="months" data-delta="1" aria-label="Sumar un mes">+</button></div></div>
+<div class="field"><label for="products">Cantidad de productos</label><div class="help">Elige de uno a tres productos que administrarás por separado.</div><div class="stepper"><button type="button" data-step="products" data-delta="-1" aria-label="Un producto menos">−</button><input id="products" type="number" min="1" max="3" value="1"><button type="button" data-step="products" data-delta="1" aria-label="Un producto más">+</button></div></div>
+<div class="field"><label>Tolerancia de clientes</label><div class="help">Probabilidad de volver tras un mes con faltantes.</div><div class="choices" role="group" aria-label="Tolerancia"><button type="button" data-choice="tolerance" data-value="baja">Baja</button><button type="button" data-choice="tolerance" data-value="media">Media</button><button type="button" data-choice="tolerance" data-value="alta">Alta</button></div></div>
+<div class="field"><label>Variabilidad de demanda</label><div class="help">Cuánto fluctúan las ventas potenciales de un mes a otro.</div><div class="choices" role="group" aria-label="Variabilidad"><button type="button" data-choice="variability" data-value="baja">Baja</button><button type="button" data-choice="variability" data-value="media">Media</button><button type="button" data-choice="variability" data-value="alta">Alta</button></div></div>
+<div class="field"><label>Relación entre productos</label><div class="help">Dependientes: comparten cambios de mercado y parte del efecto de los faltantes. Independientes: fluctuaciones separadas.</div><div class="choices" role="group" aria-label="Relación de productos"><button type="button" data-choice="relation" data-value="independientes">Independientes</button><button type="button" data-choice="relation" data-value="dependientes">Dependientes</button></div><p class="setting-note" id="relationHint"></p></div>
+</div>
+<div class="notice">Las decisiones del mes se toman sin conocer su demanda. No hay precios ni costos todavía: el desafío es planificar unidades.</div>
+</div></div></section>
+<section id="play" class="hidden">
+<div class="new-head"><h1 id="monthLabel">🏪 Mes 1</h1><div class="tag" id="gameConfig"></div></div>
+<div class="gamegrid">
+<div class="panel"><h2>📦 Inventario actual</h2><div id="warehouseTabs" class="product-tabs" role="group" aria-label="Producto visible en bodega"></div>
+<div id="warehouse" class="warehouse" role="img" aria-label="Bodega de inventario">
+<div class="warehouse-lamp" aria-hidden="true"></div>
+<div class="stock-counter">Inventario: <strong id="inventory">0</strong></div>
 <div class="warehouse-rack" id="racks" aria-hidden="true"></div>
 <div class="warehouse-empty" id="emptyStock">Tu bodega está vacía</div>
-<div class="stock-overflow hidden" id="stockOverflow"></div><div class="warehouse-floor" aria-hidden="true"></div></div>
-<p class="stock-caption">Cada caja representa hasta 10 unidades. El inventario sobrante pasa al siguiente mes.</p></div>
-<div class="panel"><h2>🛒 Tu pedido del mes</h2><p class="small">Escribe cuántas unidades pedir. La demanda real se revelará después de confirmar.</p>
-<div class="quantity"><button id="minus" aria-label="Restar diez">−</button><input type="number" id="qty" min="0" max="100000" step="1" placeholder="Tu pedido" autocomplete="off" aria-label="Unidades a pedir"><button id="plus" aria-label="Sumar diez">+</button></div>
-<button class="green ordercta" id="submit">✓ Confirmar pedido</button>
-<div class="notice">Solo puedes consultar demandas y pedidos anteriores. Diferencia = <b>pedido − demanda</b>; un número positivo indica exceso de pedido.</div>
-<h2 style="margin-top:27px">📊 Historial de la empresa</h2>
-<div class="tablewrap"><table><thead><tr><th>Mes</th><th>Demanda real</th><th>Pedido</th><th>Diferencia</th></tr></thead>
-<tbody id="history"><tr><td colspan="4" style="text-align:center">Todavía no hay datos.</td></tr></tbody></table></div></div></div></section>
-<section id="end" class="hidden"><div class="topline"><h1>🏆 Resultados de la simulación</h1><span class="tag" id="endConfig"></span></div><div class="endgrid"><div class="panel"><h2>Demanda real vs. pedidos</h2><div class="chartbox"><canvas id="plot" role="img" aria-label="Gráfica de demanda real y unidades pedidas por mes"></canvas><div class="legend"><span><i class="dot"></i>Demanda real</span><span><i class="dot orange"></i>Unidades pedidas</span></div></div><p class="small">Eje horizontal: meses. Eje vertical: cantidad. El inventario acumulado puede hacer que un pedido inferior a la demanda sea suficiente.</p></div><div class="panel"><h2>📈 Parámetros estadísticos</h2><div class="metrics" id="metrics"></div><div class="notice" id="verdict"></div></div></div><div class="buttons"><button id="csv">⬇ Exportar historial CSV</button><button id="restart" class="green">↻ Nueva simulación</button></div><div class="panel" style="margin-top:20px"><h2>Historial completo</h2><div class="tablewrap"><table><thead><tr><th>Mes</th><th>Demanda</th><th>Pedido</th><th>Diferencia</th><th>Inventario final</th><th>Ventas</th><th>No atendida</th></tr></thead><tbody id="fullHistory"></tbody></table></div></div></section>
+<div class="stock-overflow hidden" id="stockOverflow"></div>
+<div class="warehouse-floor" aria-hidden="true"></div></div>
+<p class="warehouse-note">Cada caja representa hasta 10 unidades del producto seleccionado. El inventario disponible es el sobrante de meses anteriores.</p>
+</div>
+<div class="panel"><h2>🛒 Pedidos para este mes</h2><p class="small">Introduce los pedidos de todos los productos. Los campos se mantienen vacíos para evitar sugerirte una cantidad.</p>
+<div id="orderInputs" class="order-list"></div>
+<button class="green ordercta" id="submit">✓ Confirmar pedidos del mes</button>
+<div class="notice">La <b>diferencia</b> es Demanda − (Pedido + Inventario inicial). <b>Positivo</b> significa unidades sin atender; <b>negativo</b> significa excedente disponible.</div>
+<h2 style="margin-top:24px">📊 Historial de la empresa</h2>
+<div id="historyTabs" class="product-tabs" role="group" aria-label="Producto del historial"></div>
+<div class="tablewrap"><table><thead><tr><th>Mes</th><th>Demanda real</th><th>Pedido</th><th>Inventario inicial</th><th>Diferencia</th></tr></thead><tbody id="history"></tbody></table></div>
+<p class="small">Mes 0 es un dato inicial conocido: el pedido y la demanda son iguales, y se consumen por completo.</p>
+</div></div></section>
+<section id="end" class="hidden">
+<div class="topline"><h1>🏆 Resultados de la simulación</h1><span class="tag" id="endConfig"></span></div>
+<div id="resultTabs" class="product-tabs" role="group" aria-label="Producto del informe"></div>
+<div class="endgrid"><div class="panel"><h2>Demanda real frente a pedidos</h2>
+<div class="chartbox"><canvas id="plot" role="img" aria-label="Gráfico de la demanda real y los pedidos desde el mes 0 hasta el final"></canvas><div class="legend"><span><i class="dot"></i>Demanda real</span><span><i class="dot orange"></i>Pedido</span></div></div>
+<p class="small">Mes 0 es la referencia inicial. Los estadísticos se calculan sobre los meses de juego, del 1 en adelante.</p></div>
+<div class="panel"><h2>📈 Parámetros estadísticos</h2><div class="metrics" id="metrics"></div><div class="notice" id="verdict"></div></div></div>
+<div class="buttons"><button id="csv">⬇ Descargar historial CSV</button><button id="restart" class="green">↻ Nueva partida</button></div>
+<div class="panel" style="margin-top:20px"><h2>Historial completo</h2><div class="tablewrap"><table><thead><tr><th>Mes</th><th>Producto</th><th>Demanda</th><th>Pedido</th><th>Inv. inicial</th><th>Diferencia</th><th>Ventas</th><th>Inv. final</th></tr></thead><tbody id="fullHistory"></tbody></table></div></div>
+</section>
 </div>
 <script>
+
 "use strict";
 const $=id=>document.getElementById(id);
-let tolerance="media",state=null;
-const rates={baja:.25,media:.60,alta:.9};
-const clamp=(x,min,max)=>Math.max(min,Math.min(max,x));
-const number=(x)=>Number.isFinite(Number(x))?Number(x):0;
-const avg=a=>a.length?a.reduce((s,x)=>s+x,0)/a.length:0;
-const fmt=(x,d=1)=>Number(x).toLocaleString("es-EC",{minimumFractionDigits:d,maximumFractionDigits:d});
-document.querySelectorAll("[data-tol]").forEach(b=>b.addEventListener("click",()=>{tolerance=b.dataset.tol;document.querySelectorAll("[data-tol]").forEach(x=>x.classList.toggle("active",x===b));}));
-document.querySelectorAll("[data-step]").forEach(b=>b.addEventListener("click",()=>{const el=$(b.dataset.step);el.value=clamp(number(el.value)+number(b.dataset.delta),number(el.min),number(el.max));}));
-function changeScreen(id){for(const x of ["setup","play","end"])$(x).classList.toggle("hidden",x!==id);window.scrollTo({top:0,behavior:"instant"});}
-function initialDemand(years){return Math.round(24+12*Math.sqrt(years)+4*years);}
-function drawDemand(){const m=state.rows.length+1;const base=state.base;const season=1+.19*Math.sin(2*Math.PI*(m-2)/12)+.08*Math.cos(2*Math.PI*m/6);const trend=1+.007*(m-1);const noise=1+(Math.random()+Math.random()+Math.random()-1.5)*.29;const event=Math.random()<.07?(Math.random()<.5?.68:1.38):1;return Math.max(0,Math.round(base*state.loyalty*season*trend*noise*event));}
-function start(){const years=clamp(Math.floor(number($("years").value)),0,50);const months=clamp(Math.floor(number($("months").value)),1,40);$("years").value=years;$("months").value=months;state={years,months,tolerance,base:initialDemand(years),loyalty:1,inventory:0,rows:[],demand:0};state.demand=drawDemand();$("qty").value="";updatePlay();changeScreen("play");}
-function differenceCell(d){const type=d>0?"positive":d<0?"negative":"zero";return '<span class="diff '+type+'">'+(d>0?"+"+d:d)+'</span>';}
-function updateWarehouse(){const count=state.inventory,boxes=Math.ceil(count/10),shown=Math.min(boxes,48);$("inventory").textContent=count.toLocaleString("es-EC");
-$("warehouse").setAttribute("aria-label","Inventario actual: "+count+" unidades, equivalentes a "+boxes+" cajas de hasta 10 unidades.");
-$("emptyStock").classList.toggle("hidden",count!==0);
-$("racks").innerHTML=Array.from({length:4},(_,row)=>'<div class="storage-row">'+Array.from({length:12},(_,col)=>(3-row)*12+col<shown?'<span class="crate"></span>':'').join("")+'</div>').join("");
-$("stockOverflow").classList.toggle("hidden",boxes<=48);$("stockOverflow").textContent=boxes>48?"+"+(boxes-48)+" cajas adicionales":"";}
-function updatePlay(){const i=state.rows.length;$("monthLabel").textContent="🏪 Mes "+(i+1)+" de "+state.months;$("gameConfig").textContent="Trayectoria: "+state.years+" años · Tolerancia: "+state.tolerance;updateWarehouse();
-$("history").innerHTML=state.rows.length?state.rows.slice().reverse().map(r=>"<tr><td>Mes "+r.month+"</td><td>"+r.demand+"</td><td>"+r.order+"</td><td>"+differenceCell(r.order-r.demand)+"</td></tr>").join(""):'<tr><td colspan="4" style="text-align:center">Todavía no hay datos.</td></tr>';}
-function order(){const raw=$("qty").value;if(raw.trim()===""||!Number.isInteger(Number(raw))||Number(raw)<0||Number(raw)>100000){alert("Ingresa una cantidad entera entre 0 y 100.000.");return;}const q=Number(raw),m=state.rows.length+1,available=state.inventory+q,d=state.demand,sales=Math.min(available,d),unmet=d-sales;state.inventory=available-sales;
-state.rows.push({month:m,demand:d,order:q,sales,unmet,inventory:state.inventory});
-const shortRate=d?unmet/d:0;state.loyalty=clamp(state.loyalty*(1-shortRate*(1-rates[state.tolerance])*.38)+(.013*rates[state.tolerance]),.32,1.12);
-if(m===state.months){end();return;}state.demand=drawDemand();updatePlay();$("qty").value="";}
-function end(){changeScreen("end");const r=state.rows,dem=r.map(x=>x.demand),ord=r.map(x=>x.order),err=r.map(x=>x.order-x.demand),totDem=dem.reduce((a,b)=>a+b,0),totSale=r.reduce((a,x)=>a+x.sales,0),mae=avg(err.map(Math.abs)),rmse=Math.sqrt(avg(err.map(x=>x*x))),mape=avg(r.filter(x=>x.demand>0).map(x=>100*Math.abs(x.order-x.demand)/x.demand)),bias=avg(err),std=Math.sqrt(avg(dem.map(x=>(x-avg(dem))**2))),ful=totDem?100*totSale/totDem:100;
-const data=[["Meses",r.length,0],["Demanda media",avg(dem),1],["Pedido medio",avg(ord),1],["Error absoluto (MAE)",mae,1],["Error cuadrático (RMSE)",rmse,1],["Error porcentual (MAPE)",mape,1,"%"],["Sesgo medio",bias,1],["Desv. demanda",std,1],["Demanda atendida",ful,1,"%"],["Inventario final",state.inventory,0]];
-$("metrics").innerHTML=data.map(x=>'<div class="stat"><small>'+x[0]+'</small><b>'+fmt(x[1],x[2])+(x[3]||"")+'</b></div>').join("");
-$("verdict").textContent="Atendiste el "+fmt(ful)+"% de la demanda total. "+(ful>=95?"Excelente disponibilidad.":ful>=80?"Buen nivel de atención, con espacio para mejorar.":"Los faltantes han sido importantes; revisa tus decisiones de compra.")+" El MAE mide la diferencia entre lo pedido y la demanda, no las ventas perdidas.";
-$("endConfig").textContent=r.length+" meses · "+state.years+" años de trayectoria · Tolerancia "+state.tolerance;
-$("fullHistory").innerHTML=r.map(x=>"<tr><td>"+x.month+"</td><td>"+x.demand+"</td><td>"+x.order+"</td><td>"+differenceCell(x.order-x.demand)+"</td><td>"+x.inventory+"</td><td>"+x.sales+"</td><td>"+x.unmet+"</td></tr>").join("");drawChart();}
-function drawChart(){const canvas=$("plot"),rect=canvas.getBoundingClientRect(),w=Math.max(320,rect.width),h=Math.max(250,rect.height),dpr=Math.min(window.devicePixelRatio||1,3);canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);const ctx=canvas.getContext("2d");ctx.scale(dpr,dpr);ctx.clearRect(0,0,w,h);const L=48,R=15,T=18,B=43,CW=w-L-R,CH=h-T-B;const rows=state.rows,n=rows.length,max=Math.max(10,...rows.map(r=>Math.max(r.demand,r.order)))*1.13;const X=i=>L+(n===1?CW/2:i*CW/(n-1)),Y=v=>T+CH-v/max*CH;
-ctx.font="12px system-ui";ctx.lineWidth=1;ctx.textAlign="right";ctx.textBaseline="middle";for(let j=0;j<=5;j++){const val=max*j/5,y=Y(val);ctx.strokeStyle="#416084";ctx.beginPath();ctx.moveTo(L,y);ctx.lineTo(w-R,y);ctx.stroke();ctx.fillStyle="#bed3e8";ctx.fillText(Math.round(val),L-9,y)}ctx.textAlign="center";ctx.textBaseline="top";const step=Math.max(1,Math.ceil(n/9));for(let i=0;i<n;i+=step){ctx.fillStyle="#bcd7f0";ctx.fillText(i+1,X(i),h-B+10)}if((n-1)%step!==0&&n>1)ctx.fillText(n,X(n-1),h-B+10);ctx.fillText("Mes",L+CW/2,h-16);
-for(const [key,color] of [["demand","#66ddff"],["order","#ffab5c"]]){ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=2.6;ctx.beginPath();rows.forEach((r,i)=>i?ctx.lineTo(X(i),Y(r[key])):ctx.moveTo(X(i),Y(r[key])));ctx.stroke();rows.forEach((r,i)=>{ctx.beginPath();ctx.arc(X(i),Y(r[key]),3.5,0,Math.PI*2);ctx.fill()})}}
-$("start").addEventListener("click",start);$("minus").addEventListener("click",()=>{$("qty").value=Math.max(0,number($("qty").value)-10)});$("plus").addEventListener("click",()=>{$("qty").value=Math.min(100000,number($("qty").value)+10)});$("submit").addEventListener("click",order);$("restart").addEventListener("click",()=>{state=null;changeScreen("setup")});window.addEventListener("resize",()=>{if(state&&$("end").classList.contains("hidden")===false)drawChart()});
-$("csv").addEventListener("click",()=>{const header="Mes,Demanda real,Pedido,Diferencia pedido menos demanda,Ventas,Demanda no atendida,Inventario final";const csv=[header,...state.rows.map(r=>[r.month,r.demand,r.order,r.order-r.demand,r.sales,r.unmet,r.inventory].join(","))].join("\r\n");const a=document.createElement("a"),url=URL.createObjectURL(new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}));a.href=url;a.download="predice-el-stock-resultados.csv";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)});
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const avg=xs=>xs.length?xs.reduce((a,b)=>a+b,0)/xs.length:0;
+const sum=xs=>xs.reduce((a,b)=>a+b,0);
+const fmt=(n,d=1)=>Number(n).toLocaleString("es-EC",{minimumFractionDigits:d,maximumFractionDigits:d});
+const val=(x,def,min,max)=>Number.isFinite(Number(x))?clamp(Math.floor(Number(x)),min,max):def;
+const choices=["baja","media","alta"],REL=["independientes","dependientes"];
+const DEFAULTS={years:5,months:24,products:1,tolerance:"media",variability:"media",relation:"independientes"};
+const STORE="predice-stock-ajustes-v3";
+const RATES={baja:.25,media:.60,alta:.90};
+const VOL={
+  baja:{noise:.045,season:.10,events:.025,eventSize:.18,trend:.016},
+  media:{noise:.13,season:.19,events:.07,eventSize:.34,trend:.035},
+  alta:{noise:.25,season:.27,events:.14,eventSize:.58,trend:.06}
+};
+let config={...DEFAULTS},state=null;
+function normalized(o){o=o&&typeof o==="object"?o:{};return{
+  years:val(o.years,5,0,50),months:val(o.months,24,1,40),products:val(o.products,1,1,3),
+  tolerance:choices.includes(o.tolerance)?o.tolerance:"media",
+  variability:choices.includes(o.variability)?o.variability:"media",
+  relation:REL.includes(o.relation)?o.relation:"independientes"
+};}
+try{config=normalized(JSON.parse(localStorage.getItem(STORE)||"null"));}catch(_){config={...DEFAULTS};}
+function persist(){try{localStorage.setItem(STORE,JSON.stringify(config));}catch(_){/* localStorage puede estar bloqueado */}}
+function renderSettings(){
+  for(const key of ["years","months","products"])$(key).value=config[key];
+  document.querySelectorAll("[data-choice]").forEach(btn=>{
+    const chosen=config[btn.dataset.choice]===btn.dataset.value;
+    btn.classList.toggle("active",chosen);btn.setAttribute("aria-pressed",String(chosen));
+    btn.disabled=btn.dataset.choice==="relation"&&config.products===1;
+  });
+  $("relationHint").textContent=config.products===1?"Con un solo producto esta opción no influye en la simulación.":"La dependencia hace que las demandas reaccionen en parte a los mismos sucesos.";
+  const relation=config.products===1?"No aplica":config.relation;
+  $("configSummary").innerHTML="<strong>"+config.products+" producto"+(config.products===1?"":"s")+"</strong> · "+config.months+" meses · "+config.years+" años<br>Clientes: <strong>"+config.tolerance+"</strong> · Variabilidad: <strong>"+config.variability+"</strong> · Relación: <strong>"+relation+"</strong>";
+}
+for(const key of ["years","months","products"])$(key).addEventListener("change",()=>{
+  const el=$(key);config[key]=val(el.value,DEFAULTS[key],Number(el.min),Number(el.max));persist();renderSettings();
+});
+document.querySelectorAll("[data-step]").forEach(b=>b.addEventListener("click",()=>{
+  const key=b.dataset.step,el=$(key);
+  config[key]=clamp(config[key]+Number(b.dataset.delta),Number(el.min),Number(el.max));persist();renderSettings();
+}));
+document.querySelectorAll("[data-choice]").forEach(btn=>btn.addEventListener("click",()=>{
+  const key=btn.dataset.choice;if(key==="relation"&&config.products===1)return;
+  config[key]=btn.dataset.value;persist();renderSettings();
+}));
+$("configToggle").addEventListener("click",()=>{
+  const open=$("configPanel").classList.toggle("hidden")===false;
+  $("configToggle").setAttribute("aria-expanded",String(open));
+  $("configToggle").textContent=open?"⚙️ Ocultar configuración":"⚙️ Configuración";
+});
+function show(id){for(const s of ["setup","play","end"])$(s).classList.toggle("hidden",id!==s);window.scrollTo(0,0);}
+function gaussian(){return Math.sqrt(-2*Math.log(Math.max(Math.random(),1e-12)))*Math.cos(2*Math.PI*Math.random());}
+function baseDemand(years,i){return Math.round((24+12*Math.sqrt(years)+4*years)*[1,.82,1.16][i]);}
+function initialize(){
+  const settings={...config},products=Array.from({length:settings.products},(_,i)=>({
+    name:"Producto "+(i+1),base:baseDemand(settings.years,i),stock:0,loyalty:1,momentum:0,
+    growth:[.006,-.002,.004][i]+gaussian()*.0015
+  }));
+  const baseline=products.map(p=>({demand:p.base,order:p.base,startStock:0,available:p.base,sales:p.base,unmet:0,diff:0,endStock:0}));
+  state={settings,products,rows:[{month:0,items:baseline}],pending:[],selected:0,resultSelected:-1,marketMomentum:0,lastSharedShortage:0};
+  state.pending=nextDemands();show("play");renderPlay();
+}
+function nextDemands(){
+  const m=state.rows.length,v=VOL[state.settings.variability],dependent=state.settings.products>1&&state.settings.relation==="dependientes";
+  // Un mismo choque de mercado conecta productos dependientes; no se confunde con el ruido propio.
+  const sharedShock=gaussian()*v.noise*.76;
+  state.marketMomentum=clamp(.72*state.marketMomentum+gaussian()*v.trend,-.24,.24);
+  return state.products.map((p,i)=>{
+    p.momentum=clamp(.62*p.momentum+gaussian()*v.trend,-.26,.26);
+    // Cada artículo conserva una fase estacional propia si la relación es independiente.
+    const phase=dependent?-.8:[-.8,1.1,2.6][i];
+    const season=1+v.season*Math.sin(2*Math.PI*(m-1)/12+phase)+.05*Math.cos(2*Math.PI*m/6+phase);
+    const trend=clamp(1+p.growth*m+p.momentum+(dependent?state.marketMomentum:0),.65,1.55);
+    const noise=gaussian()*v.noise*(dependent?.72:1)+(dependent?sharedShock:0);
+    const incident=Math.random()<v.events?(Math.random()<.5?-1:1)*v.eventSize*(.4+.6*Math.random()):0;
+    const linked=dependent?1-.18*state.lastSharedShortage:1;
+    return Math.max(0,Math.round(p.base*p.loyalty*season*trend*linked*Math.max(.08,1+noise+incident)));
+  });
+}
+function differenceCell(n){
+  if(n>0)return '<span class="shortage">+'+n+'</span>';
+  if(n<0)return '<span class="excess">'+n+'</span>';
+  return '<span class="balanced">0</span>';
+}
+function tabs(element,selected,includeAll,cb){
+  const buttons=(includeAll?[{idx:-1,name:"Todos"}]:[]).concat(state.products.map((p,idx)=>({idx,name:p.name})));
+  $(element).innerHTML=buttons.map(x=>'<button type="button" class="'+(selected===x.idx?"active":"")+'" data-idx="'+x.idx+'">'+x.name+'</button>').join("");
+  $(element).querySelectorAll("button").forEach(btn=>btn.addEventListener("click",()=>cb(Number(btn.dataset.idx))));
+}
+function drawWarehouse(){
+  const p=state.products[state.selected],count=p.stock,boxes=Math.ceil(count/10),shown=Math.min(48,boxes);
+  $("inventory").textContent=fmt(count,0);
+  $("warehouse").setAttribute("aria-label",p.name+": "+count+" unidades almacenadas, equivalentes a "+boxes+" cajas de diez unidades como máximo.");
+  $("emptyStock").classList.toggle("hidden",count>0);
+  $("racks").innerHTML=Array.from({length:4},(_,row)=>'<div class="storage-row">'+Array.from({length:12},(_,col)=>(3-row)*12+col<shown?'<span class="crate"></span>':'').join("")+'</div>').join("");
+  $("stockOverflow").classList.toggle("hidden",boxes<=48);
+  $("stockOverflow").textContent=boxes>48?"+"+(boxes-48)+" cajas adicionales":"";
+}
+function renderHistory(){
+  const idx=state.selected;
+  $("history").innerHTML=state.rows.slice().reverse().map(r=>{
+    const x=r.items[idx];
+    return '<tr class="'+(r.month===0?"baseline-row":"")+'"><td>Mes '+r.month+'</td><td>'+x.demand+'</td><td>'+x.order+'</td><td>'+x.startStock+'</td><td>'+differenceCell(x.diff)+'</td></tr>';
+  }).join("");
+}
+function renderPlay(){
+  const s=state.settings,m=state.rows.length;
+  $("monthLabel").textContent="🏪 Mes "+m+" de "+s.months;
+  $("gameConfig").textContent=s.products+" producto"+(s.products===1?"":"s")+" · "+s.years+" años · "+s.variability+" variabilidad";
+  $("orderInputs").innerHTML=state.products.map((p,i)=>'<div class="order-item"><label for="qty-'+i+'">'+p.name+'</label><p>Inventario disponible: <strong>'+p.stock+'</strong></p><input id="qty-'+i+'" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" placeholder="Cantidad" aria-label="Pedido para '+p.name+'"></div>').join("");
+  // Ningún campo se rellena con cifras históricas o estimadas.
+  tabs("warehouseTabs",state.selected,false,idx=>{state.selected=idx;renderProductViews();});
+  renderProductViews();
+}
+function renderProductViews(){
+  tabs("warehouseTabs",state.selected,false,idx=>{state.selected=idx;renderProductViews();});
+  tabs("historyTabs",state.selected,false,idx=>{state.selected=idx;renderProductViews();});
+  drawWarehouse();renderHistory();
+}
+function confirmMonth(){
+  if(!state)return;
+  const quantities=[];
+  for(let i=0;i<state.products.length;i++){
+    const input=$("qty-"+i),raw=input.value.trim();
+    if(!/^\d{1,6}$/.test(raw)||Number(raw)>100000){
+      input.focus();alert("Escribe un pedido entero entre 0 y 100.000 para "+state.products[i].name+".");return;
+    }
+    quantities.push(Number(raw));
+  }
+  const current=state.rows.length;
+  const items=state.products.map((p,i)=>{
+    const startStock=p.stock,order=quantities[i],demand=state.pending[i],available=startStock+order,sales=Math.min(demand,available);
+    const diff=demand-available,unmet=Math.max(0,diff),endStock=available-sales;
+    p.stock=endStock;
+    const tolerance=RATES[state.settings.tolerance],shortage=demand>0?unmet/demand:0;
+    // La pérdida de clientes se acumula, con una recuperación parcial en meses siguientes.
+    p.loyalty=clamp(p.loyalty*(1-shortage*(1-tolerance)*.42)+(1-p.loyalty)*.018,.35,1.10);
+    return {startStock,order,demand,available,sales,diff,unmet,endStock};
+  });
+  const lastShortage=avg(items.map(x=>x.demand>0?x.unmet/x.demand:0));
+  state.lastSharedShortage=.5*state.lastSharedShortage+.5*lastShortage;
+  state.rows.push({month:current,items});
+  if(current===state.settings.months){show("end");renderEnd();return;}
+  state.pending=nextDemands();renderPlay();
+}
+function rowFor(r,idx){
+  if(idx>=0)return r.items[idx];
+  const items=r.items;
+  return {demand:sum(items.map(x=>x.demand)),order:sum(items.map(x=>x.order)),
+    startStock:sum(items.map(x=>x.startStock)),available:sum(items.map(x=>x.available)),
+    sales:sum(items.map(x=>x.sales)),unmet:sum(items.map(x=>x.unmet)),
+    endStock:sum(items.map(x=>x.endStock)),diff:sum(items.map(x=>x.diff))};
+}
+function renderEnd(){
+  const s=state.settings;
+  $("endConfig").textContent=s.months+" meses · "+s.products+" producto"+(s.products===1?"":"s")+" · Variabilidad "+s.variability;
+  tabs("resultTabs",state.resultSelected,true,idx=>{state.resultSelected=idx;renderEnd();});
+  const idx=state.resultSelected;
+  const samples=state.rows.slice(1).map(r=>rowFor(r,idx));
+  const demands=samples.map(x=>x.demand),orders=samples.map(x=>x.order),errors=samples.map(x=>x.order-x.demand);
+  const demandTotal=sum(demands),salesTotal=sum(samples.map(x=>x.sales)),unmet=sum(samples.map(x=>x.unmet));
+  const service=demandTotal?100*salesTotal/demandTotal:100;
+  const mae=avg(errors.map(Math.abs)),rmse=Math.sqrt(avg(errors.map(x=>x*x)));
+  const percentageErrors=samples.filter(x=>x.demand>0).map(x=>100*Math.abs(x.order-x.demand)/x.demand);
+  const std=Math.sqrt(avg(demands.map(d=>(d-avg(demands))**2)));
+  const metrics=[
+    ["Meses simulados",s.months,0],["Demanda media",avg(demands),1],["Pedido medio",avg(orders),1],
+    ["Demanda sin atender",unmet,0],["Nivel de servicio",service,1,"%"],
+    ["MAE pedido / demanda",mae,1],["RMSE",rmse,1],["MAPE",avg(percentageErrors),1,"%"],
+    ["Sesgo medio",avg(errors),1],["Desviación demanda",std,1],
+    ["Inventario final",samples[samples.length-1].endStock,0]
+  ];
+  $("metrics").innerHTML=metrics.map(x=>'<div class="stat"><small>'+x[0]+'</small><b>'+fmt(x[1],x[2])+(x[3]||"")+'</b></div>').join("");
+  $("verdict").textContent="Se atendió el "+fmt(service,1)+"% de la demanda. Quedaron "+unmet+" unidades sin atender. El nivel de servicio sí considera el inventario acumulado; MAE, RMSE y MAPE comparan únicamente los pedidos con la demanda.";
+  $("fullHistory").innerHTML=state.rows.flatMap(r=>r.items.map((x,i)=>'<tr class="'+(r.month===0?"baseline-row":"")+'"><td>'+r.month+'</td><td>Producto '+(i+1)+'</td><td>'+x.demand+'</td><td>'+x.order+'</td><td>'+x.startStock+'</td><td>'+differenceCell(x.diff)+'</td><td>'+x.sales+'</td><td>'+x.endStock+'</td></tr>')).join("");
+  drawChart(idx);
+}
+function drawChart(idx){
+  const canvas=$("plot"),rect=canvas.getBoundingClientRect(),w=Math.max(310,rect.width),h=Math.max(250,rect.height);
+  const ratio=Math.min(window.devicePixelRatio||1,3);canvas.width=Math.round(w*ratio);canvas.height=Math.round(h*ratio);
+  const ctx=canvas.getContext("2d");ctx.scale(ratio,ratio);ctx.clearRect(0,0,w,h);
+  const rows=state.rows.map(r=>({month:r.month,...rowFor(r,idx)})),n=rows.length,max=Math.max(10,...rows.map(r=>Math.max(r.demand,r.order)))*1.13;
+  const L=49,R=16,T=20,B=44,CW=w-L-R,CH=h-T-B,X=i=>L+i*CW/(n-1),Y=v=>T+CH-v/max*CH;
+  ctx.font="12px system-ui";ctx.lineWidth=1;ctx.textAlign="right";ctx.textBaseline="middle";
+  for(let j=0;j<=5;j++){const val=max*j/5,y=Y(val);ctx.strokeStyle="#426084";ctx.beginPath();ctx.moveTo(L,y);ctx.lineTo(w-R,y);ctx.stroke();ctx.fillStyle="#c4d6e9";ctx.fillText(Math.round(val),L-8,y);}
+  ctx.textAlign="center";ctx.textBaseline="top";
+  const step=Math.max(1,Math.ceil((n-1)/9));
+  for(let i=0;i<n;i+=step){ctx.fillStyle="#bcd7f0";ctx.fillText(rows[i].month,X(i),h-B+10);}
+  if((n-1)%step!==0)ctx.fillText(rows[n-1].month,X(n-1),h-B+10);
+  ctx.fillText("Mes",L+CW/2,h-16);
+  for(const [key,color] of [["demand","#66ddff"],["order","#ffab5c"]]){
+    ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=2.5;ctx.beginPath();
+    rows.forEach((r,i)=>i?ctx.lineTo(X(i),Y(r[key])):ctx.moveTo(X(i),Y(r[key])));ctx.stroke();
+    rows.forEach((r,i)=>{ctx.beginPath();ctx.arc(X(i),Y(r[key]),3,0,Math.PI*2);ctx.fill();});
+  }
+}
+function downloadCSV(){
+  const head=["Mes","Producto","Demanda real","Pedido","Inventario inicial","Diferencia demanda menos disponible","Demanda no atendida","Ventas","Inventario final"];
+  const data=[head.join(","),...state.rows.flatMap(r=>r.items.map((x,i)=>[r.month,i+1,x.demand,x.order,x.startStock,x.diff,x.unmet,x.sales,x.endStock].join(",")))].join("\r\n");
+  const url=URL.createObjectURL(new Blob(["\ufeff"+data],{type:"text/csv;charset=utf-8"})),a=document.createElement("a");
+  a.href=url;a.download="predice-el-stock-resultados.csv";document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+$("start").addEventListener("click",initialize);
+$("submit").addEventListener("click",confirmMonth);
+$("restart").addEventListener("click",()=>{state=null;renderSettings();show("setup");});
+$("csv").addEventListener("click",downloadCSV);
+window.addEventListener("resize",()=>{if(state&&!$("end").classList.contains("hidden"))drawChart(state.resultSelected);});
+renderSettings();
+
 </script></body></html>
