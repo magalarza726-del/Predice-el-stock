@@ -60,27 +60,80 @@
 .baseline-row td{background:#28557740}
 .result-summary{margin-top:20px;color:#bcd7eb}
 @media(max-width:800px){.hero{grid-template-columns:1fr}.store{min-height:300px}.configgrid{grid-template-columns:1fr}.order-list{grid-template-columns:1fr}.endgrid{grid-template-columns:1fr}}
+
+/* V4 — escaparate estable y ajustes en ventana modal */
+.hero{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:stretch}
+.store{padding:32px 28px;min-height:460px;overflow:hidden;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:25px;text-align:center;background:radial-gradient(circle at 50% 26%,#375f8d,#182f50 68%,#12243f)}
+.store:before{display:none}
+.store-stage{width:min(100%,400px);height:226px;flex:none;position:relative;isolation:isolate}
+.store-building{position:absolute;left:13%;right:13%;bottom:6px;height:154px;border:6px solid #304d77;border-bottom:12px solid #395773;border-radius:10px 10px 3px 3px;background:linear-gradient(100deg,#314b72,#1d3454 60%,#3c557b);box-shadow:0 12px 27px #07142996}
+.store-window{position:absolute;left:8%;bottom:12px;height:68px;width:32%;border:6px solid #5d96bf;border-radius:5px;background:linear-gradient(145deg,#153753 0 47%,#428ab3 48% 53%,#153c61 54%);box-shadow:inset 0 0 14px #7cbedc77}
+.store-window.right{left:auto;right:8%}
+.store-door{position:absolute;left:43%;width:14%;height:83px;bottom:0;border:6px solid #6996b5;border-bottom:0;border-radius:5px 5px 0 0;background:linear-gradient(90deg,#1d3a5a 0 48%,#487b9c 49% 51%,#1a3e5f 52%)}
+.store-awning{position:absolute;left:7%;right:7%;top:65px;height:63px;border-radius:7px 7px 13px 13px;border-top:10px solid #b83c5a;border-bottom:10px solid #b83c5a;background:repeating-linear-gradient(90deg,#f8e6d8 0 42px,#d95c71 42px 84px);box-shadow:0 11px 17px #07142766;z-index:2}
+.store-logo-sign{position:absolute;top:0;left:50%;transform:translateX(-50%);font-size:14px;font-weight:900;letter-spacing:2px;background:#0b253d;border:2px solid #6ae1eb;color:#8ff6f3;padding:8px 19px;border-radius:10px;box-shadow:0 0 18px #36cbe744;white-space:nowrap}
+.store-copy{max-width:480px}
+.store-copy .store-kicker{font-size:12px;letter-spacing:2px;color:#8deaf1;font-weight:850;margin-bottom:8px}
+.store-copy h1{font-size:clamp(29px,3.7vw,44px);line-height:1.1;margin:0 0 14px;text-shadow:none;letter-spacing:-1px}
+.store-copy p{font-size:16px;line-height:1.6;margin:0;padding:0;background:none;color:#c7dff5}
+.config{display:flex;flex-direction:column;justify-content:center;min-width:0}
+.config .green{margin-top:0;width:auto;font-size:17px}
+.config .start-actions{margin-top:18px}
+.modal-backdrop{position:fixed;z-index:1000;inset:0;background:#04101ec9;display:flex;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(7px)}
+.settings-modal{width:min(750px,100%);max-height:min(90dvh,800px);overflow:auto;overscroll-behavior:contain;background:linear-gradient(140deg,#19365a,#0a1f3c);border:1px solid #7faed2;border-radius:20px;box-shadow:0 24px 95px #020a18e8;padding:23px 27px}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid #456787;padding-bottom:13px}
+.modal-head h2{font-size:24px;margin:0}
+.modal-x{font-size:27px;line-height:1;padding:5px 13px;box-shadow:none}
+.modal-footer{display:flex;justify-content:flex-end;border-top:1px solid #456787;padding-top:15px;margin-top:16px}
+.modal-footer .green{margin:0;width:auto;min-width:180px}
+.settings-modal .field{padding:16px 0}
+.settings-modal .field label{margin-bottom:7px}
+.settings-modal .configgrid{gap:0 26px}
+.snap-control{margin:17px 6px 4px}
+.snap-range{appearance:none;-webkit-appearance:none;display:block;width:100%;height:9px;border-radius:99px;background:linear-gradient(90deg,#1e709d,#4e7c9c);border:1px solid #749fbf;cursor:pointer;margin:0 0 14px;outline-offset:6px}
+.snap-range:disabled{cursor:not-allowed;opacity:.38}
+.snap-range::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#7af1f5;border:3px solid #e8fbff;box-shadow:0 0 0 4px #176087,0 1px 10px #00faff66}
+.snap-range::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#7af1f5;border:3px solid #e8fbff;box-shadow:0 0 0 4px #176087,0 1px 10px #00faff66}
+.snap-labels{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#aecce6;font-size:13px;font-weight:700}
+.snap-labels span{min-width:0;cursor:pointer}
+.snap-labels span.selected{color:#87f1f2}
+.snap-labels.is-disabled span{cursor:default;opacity:.55}
+.modal-open{overflow:hidden}
+@media(max-width:800px){.hero{grid-template-columns:1fr}.store{min-height:340px;gap:10px}.store-stage{height:205px}.store-awning{top:57px}.store-building{height:149px}.config{min-height:300px}}
+@media(max-width:530px){.settings-modal{padding:17px 16px;max-height:94dvh}.settings-modal .configgrid{grid-template-columns:1fr}.modal-head h2{font-size:21px}.store-stage{height:195px}.store{min-height:340px;padding:22px}.store-copy p{font-size:15px}}
 </style></head>
 <body><div class="shell"><header><div class="brand">📦 Predice <span>el Stock</span></div><div class="tag">Un producto · Hasta 40 meses</div></header>
 <section id="setup" class="hero">
-<div class="store panel"><div class="shopicon" aria-hidden="true">🏪</div><div><h1>Predice el Stock</h1><p>Gestiona las existencias y descubre cómo cambia la demanda de tu tienda.</p></div></div>
-<div class="panel config">
-<h2>📦 Tu próxima partida</h2>
-<p class="setup-info">Empiezas con un <strong>Mes 0</strong> conocido. Después decidirás los pedidos sin ver la demanda futura. Cada partida utiliza la última configuración que elegiste.</p>
-<div class="summary" id="configSummary" aria-live="polite"></div>
-<div class="start-actions"><button type="button" id="configToggle" class="subtle" aria-expanded="false" aria-controls="configPanel">⚙️ Configuración</button><button class="green" id="start">▶ Iniciar simulación</button></div>
-<div class="config-panel hidden" id="configPanel">
-<h2>⚙️ Configuración del juego</h2>
-<div class="configgrid">
-<div class="field"><label for="years">Trayectoria</label><div class="help">Años que lleva funcionando la tienda; aumenta la base de clientes.</div><div class="stepper"><button type="button" data-step="years" data-delta="-1" aria-label="Restar un año">−</button><input id="years" type="number" min="0" max="50" value="5"><button type="button" data-step="years" data-delta="1" aria-label="Sumar un año">+</button></div></div>
-<div class="field"><label for="months">Meses a simular</label><div class="help">Duración de la partida (máximo 40, más el mes 0).</div><div class="stepper"><button type="button" data-step="months" data-delta="-1" aria-label="Restar un mes">−</button><input id="months" type="number" min="1" max="40" value="24"><button type="button" data-step="months" data-delta="1" aria-label="Sumar un mes">+</button></div></div>
-<div class="field"><label for="products">Cantidad de productos</label><div class="help">Elige de uno a tres productos que administrarás por separado.</div><div class="stepper"><button type="button" data-step="products" data-delta="-1" aria-label="Un producto menos">−</button><input id="products" type="number" min="1" max="3" value="1"><button type="button" data-step="products" data-delta="1" aria-label="Un producto más">+</button></div></div>
-<div class="field"><label>Tolerancia de clientes</label><div class="help">Probabilidad de volver tras un mes con faltantes.</div><div class="choices" role="group" aria-label="Tolerancia"><button type="button" data-choice="tolerance" data-value="baja">Baja</button><button type="button" data-choice="tolerance" data-value="media">Media</button><button type="button" data-choice="tolerance" data-value="alta">Alta</button></div></div>
-<div class="field"><label>Variabilidad de demanda</label><div class="help">Cuánto fluctúan las ventas potenciales de un mes a otro.</div><div class="choices" role="group" aria-label="Variabilidad"><button type="button" data-choice="variability" data-value="baja">Baja</button><button type="button" data-choice="variability" data-value="media">Media</button><button type="button" data-choice="variability" data-value="alta">Alta</button></div></div>
-<div class="field"><label>Relación entre productos</label><div class="help">Dependientes: comparten cambios de mercado y parte del efecto de los faltantes. Independientes: fluctuaciones separadas.</div><div class="choices" role="group" aria-label="Relación de productos"><button type="button" data-choice="relation" data-value="independientes">Independientes</button><button type="button" data-choice="relation" data-value="dependientes">Dependientes</button></div><p class="setting-note" id="relationHint"></p></div>
+<div class="store panel">
+  <div class="store-stage" aria-hidden="true">
+    <div class="store-logo-sign">TU TIENDA</div>
+    <div class="store-building"><span class="store-window"></span><span class="store-door"></span><span class="store-window right"></span></div>
+    <div class="store-awning"></div>
+  </div>
+  <div class="store-copy"><div class="store-kicker">SIMULADOR DE INVENTARIO</div><h1>Predice el Stock</h1><p>Gestiona pedidos, evita quedarte sin mercancía y aprende a anticipar la demanda.</p></div>
 </div>
-<div class="notice">Las decisiones del mes se toman sin conocer su demanda. No hay precios ni costos todavía: el desafío es planificar unidades.</div>
-</div></div></section>
+<div class="panel config">
+  <h2>📦 Tu próxima partida</h2>
+  <p class="setup-info">Comienzas con un <strong>Mes 0</strong> conocido. Luego haces pedidos sin conocer la demanda del mes. Se mantiene tu última configuración.</p>
+  <div class="summary" id="configSummary" aria-live="polite"></div>
+  <div class="start-actions"><button type="button" id="configToggle" class="subtle" aria-expanded="false" aria-haspopup="dialog" aria-controls="configPanel">⚙️ Configuración</button><button class="green" id="start">▶ Iniciar simulación</button></div>
+</div>
+</section>
+<div id="configBackdrop" class="modal-backdrop hidden">
+  <div id="configPanel" class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
+    <div class="modal-head"><h2 id="modalTitle">⚙️ Configuración del juego</h2><button id="configClose" type="button" class="subtle modal-x" aria-label="Cerrar configuración">×</button></div>
+    <div class="configgrid">
+      <div class="field"><label for="years">Trayectoria</label><div class="help">Años que lleva operando la tienda.</div><div class="stepper"><button type="button" data-step="years" data-delta="-1" aria-label="Restar un año">−</button><input id="years" type="number" min="0" max="50" value="5"><button type="button" data-step="years" data-delta="1" aria-label="Sumar un año">+</button></div></div>
+      <div class="field"><label for="months">Meses a simular</label><div class="help">De 1 a 40 meses, además del Mes 0.</div><div class="stepper"><button type="button" data-step="months" data-delta="-1" aria-label="Restar un mes">−</button><input id="months" type="number" min="1" max="40" value="24"><button type="button" data-step="months" data-delta="1" aria-label="Sumar un mes">+</button></div></div>
+      <div class="field"><label for="products">Cantidad de productos</label><div class="help">De 1 a 3 productos para administrar.</div><div class="stepper"><button type="button" data-step="products" data-delta="-1" aria-label="Restar un producto">−</button><input id="products" type="number" min="1" max="3" value="1"><button type="button" data-step="products" data-delta="1" aria-label="Sumar un producto">+</button></div></div>
+      <div class="field"><label for="tolerance" id="toleranceLabel">Tolerancia de clientes</label><div class="help">Qué tan probable es que vuelvan tras un faltante.</div><div class="snap-control"><input class="snap-range" id="tolerance" type="range" min="0" max="2" step="1" value="1" aria-valuetext="Media" data-slider="tolerance"><div class="snap-labels" data-labels="tolerance"><span data-range-option="tolerance" data-idx="0">Baja</span><span data-range-option="tolerance" data-idx="1">Media</span><span data-range-option="tolerance" data-idx="2">Alta</span></div></div></div>
+      <div class="field"><label for="variability" id="variabilityLabel">Variabilidad de la demanda</label><div class="help">Intensidad de fluctuaciones y eventos inesperados.</div><div class="snap-control"><input class="snap-range" id="variability" type="range" min="0" max="2" step="1" value="1" aria-valuetext="Media" data-slider="variability"><div class="snap-labels" data-labels="variability"><span data-range-option="variability" data-idx="0">Baja</span><span data-range-option="variability" data-idx="1">Media</span><span data-range-option="variability" data-idx="2">Alta</span></div></div></div>
+      <div class="field"><label for="relation" id="relationLabel">Relación entre productos</label><div class="help">Si responden juntos a cambios del mercado o por separado.</div><div class="snap-control"><input class="snap-range" id="relation" type="range" min="0" max="1" step="1" value="0" aria-valuetext="Independientes" data-slider="relation"><div class="snap-labels" data-labels="relation"><span data-range-option="relation" data-idx="0">Independientes</span><span data-range-option="relation" data-idx="1">Dependientes</span></div></div><p class="setting-note" id="relationHint"></p></div>
+    </div>
+    <div class="notice">La demanda del próximo mes no se revela hasta confirmar los pedidos.</div>
+    <div class="modal-footer"><button id="configDone" type="button" class="green">✓ Guardar y cerrar</button></div>
+  </div>
+</div>
 <section id="play" class="hidden">
 <div class="new-head"><h1 id="monthLabel">🏪 Mes 1</h1><div class="tag" id="gameConfig"></div></div>
 <div class="gamegrid">
@@ -97,7 +150,7 @@
 <div class="panel"><h2>🛒 Pedidos para este mes</h2><p class="small">Introduce los pedidos de todos los productos. Los campos se mantienen vacíos para evitar sugerirte una cantidad.</p>
 <div id="orderInputs" class="order-list"></div>
 <button class="green ordercta" id="submit">✓ Confirmar pedidos del mes</button>
-<div class="notice">La <b>diferencia</b> es Demanda − (Pedido + Inventario inicial). <b>Positivo</b> significa unidades sin atender; <b>negativo</b> significa excedente disponible.</div>
+<div class="notice">La <b>diferencia</b> es (Pedido + Inventario inicial) − Demanda. <b>Positivo (verde)</b>: excedente; <b>negativo (rojo)</b>: demanda no atendida.</div>
 <h2 style="margin-top:24px">📊 Historial de la empresa</h2>
 <div id="historyTabs" class="product-tabs" role="group" aria-label="Producto del historial"></div>
 <div class="tablewrap"><table><thead><tr><th>Mes</th><th>Demanda real</th><th>Pedido</th><th>Inventario inicial</th><th>Diferencia</th></tr></thead><tbody id="history"></tbody></table></div>
@@ -141,14 +194,20 @@ function normalized(o){o=o&&typeof o==="object"?o:{};return{
 };}
 try{config=normalized(JSON.parse(localStorage.getItem(STORE)||"null"));}catch(_){config={...DEFAULTS};}
 function persist(){try{localStorage.setItem(STORE,JSON.stringify(config));}catch(_){/* localStorage puede estar bloqueado */}}
+const SLIDER_CHOICES={tolerance:choices,variability:choices,relation:REL};
+function titleCase(text){return text.charAt(0).toUpperCase()+text.slice(1);}
 function renderSettings(){
   for(const key of ["years","months","products"])$(key).value=config[key];
-  document.querySelectorAll("[data-choice]").forEach(btn=>{
-    const chosen=config[btn.dataset.choice]===btn.dataset.value;
-    btn.classList.toggle("active",chosen);btn.setAttribute("aria-pressed",String(chosen));
-    btn.disabled=btn.dataset.choice==="relation"&&config.products===1;
-  });
-  $("relationHint").textContent=config.products===1?"Con un solo producto esta opción no influye en la simulación.":"La dependencia hace que las demandas reaccionen en parte a los mismos sucesos.";
+  for(const key of Object.keys(SLIDER_CHOICES)){
+    const opts=SLIDER_CHOICES[key],el=$(key),index=opts.indexOf(config[key]);
+    el.value=String(index);
+    el.disabled=key==="relation"&&config.products===1;
+    el.setAttribute("aria-valuetext",titleCase(opts[index]));
+    document.querySelectorAll('[data-range-option="'+key+'"]').forEach(item=>item.classList.toggle("selected",Number(item.dataset.idx)===index));
+    const labels=document.querySelector('[data-labels="'+key+'"]');
+    if(labels)labels.classList.toggle("is-disabled",el.disabled);
+  }
+  $("relationHint").textContent=config.products===1?"Con un solo producto, la dependencia no tiene efecto.":"Dependientes comparten parte de los eventos de mercado; independientes varían por separado.";
   const relation=config.products===1?"No aplica":config.relation;
   $("configSummary").innerHTML="<strong>"+config.products+" producto"+(config.products===1?"":"s")+"</strong> · "+config.months+" meses · "+config.years+" años<br>Clientes: <strong>"+config.tolerance+"</strong> · Variabilidad: <strong>"+config.variability+"</strong> · Relación: <strong>"+relation+"</strong>";
 }
@@ -159,14 +218,45 @@ document.querySelectorAll("[data-step]").forEach(b=>b.addEventListener("click",(
   const key=b.dataset.step,el=$(key);
   config[key]=clamp(config[key]+Number(b.dataset.delta),Number(el.min),Number(el.max));persist();renderSettings();
 }));
-document.querySelectorAll("[data-choice]").forEach(btn=>btn.addEventListener("click",()=>{
-  const key=btn.dataset.choice;if(key==="relation"&&config.products===1)return;
-  config[key]=btn.dataset.value;persist();renderSettings();
+for(const key of Object.keys(SLIDER_CHOICES)){
+  $(key).addEventListener("input",()=>{
+    if(key==="relation"&&config.products===1)return;
+    config[key]=SLIDER_CHOICES[key][Number($(key).value)];persist();renderSettings();
+  });
+}
+document.querySelectorAll("[data-range-option]").forEach(label=>label.addEventListener("click",()=>{
+  const key=label.dataset.rangeOption;
+  if(key==="relation"&&config.products===1)return;
+  config[key]=SLIDER_CHOICES[key][Number(label.dataset.idx)];persist();renderSettings();
 }));
-$("configToggle").addEventListener("click",()=>{
-  const open=$("configPanel").classList.toggle("hidden")===false;
-  $("configToggle").setAttribute("aria-expanded",String(open));
-  $("configToggle").textContent=open?"⚙️ Ocultar configuración":"⚙️ Configuración";
+let previousFocus=null;
+function openConfig(){
+  previousFocus=document.activeElement;
+  $("configBackdrop").classList.remove("hidden");
+  $("configToggle").setAttribute("aria-expanded","true");
+  document.body.classList.add("modal-open");
+  $("configClose").focus();
+}
+function closeConfig(){
+  $("configBackdrop").classList.add("hidden");
+  $("configToggle").setAttribute("aria-expanded","false");
+  document.body.classList.remove("modal-open");
+  if(previousFocus&&typeof previousFocus.focus==="function")previousFocus.focus();
+  previousFocus=null;
+}
+$("configToggle").addEventListener("click",openConfig);
+$("configClose").addEventListener("click",closeConfig);
+$("configDone").addEventListener("click",closeConfig);
+$("configBackdrop").addEventListener("click",e=>{if(e.target===$("configBackdrop"))closeConfig();});
+document.addEventListener("keydown",e=>{
+  if($("configBackdrop").classList.contains("hidden"))return;
+  if(e.key==="Escape"){e.preventDefault();closeConfig();return;}
+  if(e.key!=="Tab")return;
+  const controls=[...$("configPanel").querySelectorAll('button:not(:disabled),input:not(:disabled)')];
+  if(!controls.length)return;
+  const first=controls[0],last=controls[controls.length-1];
+  if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+  else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
 });
 function show(id){for(const s of ["setup","play","end"])$(s).classList.toggle("hidden",id!==s);window.scrollTo(0,0);}
 function gaussian(){return Math.sqrt(-2*Math.log(Math.max(Math.random(),1e-12)))*Math.cos(2*Math.PI*Math.random());}
@@ -198,8 +288,8 @@ function nextDemands(){
   });
 }
 function differenceCell(n){
-  if(n>0)return '<span class="shortage">+'+n+'</span>';
-  if(n<0)return '<span class="excess">'+n+'</span>';
+  if(n>0)return '<span class="excess">+'+n+'</span>';
+  if(n<0)return '<span class="shortage">'+n+'</span>';
   return '<span class="balanced">0</span>';
 }
 function tabs(element,selected,includeAll,cb){
@@ -250,7 +340,7 @@ function confirmMonth(){
   const current=state.rows.length;
   const items=state.products.map((p,i)=>{
     const startStock=p.stock,order=quantities[i],demand=state.pending[i],available=startStock+order,sales=Math.min(demand,available);
-    const diff=demand-available,unmet=Math.max(0,diff),endStock=available-sales;
+    const diff=available-demand,unmet=Math.max(0,-diff),endStock=available-sales;
     p.stock=endStock;
     const tolerance=RATES[state.settings.tolerance],shortage=demand>0?unmet/demand:0;
     // La pérdida de clientes se acumula, con una recuperación parcial en meses siguientes.
@@ -315,7 +405,7 @@ function drawChart(idx){
   }
 }
 function downloadCSV(){
-  const head=["Mes","Producto","Demanda real","Pedido","Inventario inicial","Diferencia demanda menos disponible","Demanda no atendida","Ventas","Inventario final"];
+  const head=["Mes","Producto","Demanda real","Pedido","Inventario inicial","Diferencia disponible menos demanda","Demanda no atendida","Ventas","Inventario final"];
   const data=[head.join(","),...state.rows.flatMap(r=>r.items.map((x,i)=>[r.month,i+1,x.demand,x.order,x.startStock,x.diff,x.unmet,x.sales,x.endStock].join(",")))].join("\r\n");
   const url=URL.createObjectURL(new Blob(["\ufeff"+data],{type:"text/csv;charset=utf-8"})),a=document.createElement("a");
   a.href=url;a.download="predice-el-stock-resultados.csv";document.body.appendChild(a);a.click();a.remove();
